@@ -1,4 +1,4 @@
-````md
+
 <p align="justify"><h1>Mini Transformer em PyTorch</h1></p>
 
 <p align="justify">
