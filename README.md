@@ -1,4 +1,3 @@
-
 <p align="justify"><h1>Mini Transformer em PyTorch</h1></p>
 
 <p align="justify">
@@ -39,17 +38,17 @@ O projeto utiliza principalmente o framework <b>PyTorch</b>, responsável pela c
 import torch
 import torch.nn as nn
 import math
-````
+```
 
 <p align="justify">
 As bibliotecas possuem as seguintes funções:
 </p>
 
-| Biblioteca | Função                |
-| ---------- | --------------------- |
-| torch      | Operações tensoriais  |
-| torch.nn   | Camadas neurais       |
-| math       | Operações matemáticas |
+| Biblioteca | Função |
+|---|---|
+| torch | Operações tensoriais |
+| torch.nn | Camadas neurais |
+| math | Operações matemáticas |
 
 ---
 
@@ -87,22 +86,22 @@ Por isso, é necessário injetar explicitamente informações posicionais nos em
 </p>
 
 <p align="justify">
-O projeto utiliza o positional encoding senoidal introduzido no paper clássico:
+O projeto utiliza o positional encoding senoidal introduzido no paper clássico "Attention Is All You Need".
 </p>
 
 <p align="center">
 
-[
+$$
 PE(pos,2i)=\sin\left(\frac{pos}{10000^{2i/d}}\right)
-]
+$$
 
 </p>
 
 <p align="center">
 
-[
+$$
 PE(pos,2i+1)=\cos\left(\frac{pos}{10000^{2i/d}}\right)
-]
+$$
 
 </p>
 
@@ -241,9 +240,9 @@ A fórmula principal da attention é:
 
 <p align="center">
 
-[
+$$
 Attention(Q,K,V)=softmax\left(\frac{QK^T}{\sqrt{d_k}}\right)V
-]
+$$
 
 </p>
 
@@ -252,10 +251,10 @@ Onde:
 </p>
 
 | Componente | Função |
-| ---------- | ------ |
-| Q          | Query  |
-| K          | Key    |
-| V          | Value  |
+|---|---|
+| Q | Query |
+| K | Key |
+| V | Value |
 
 <p align="justify">
 O produto:
@@ -263,9 +262,9 @@ O produto:
 
 <p align="center">
 
-[
+$$
 QK^T
-]
+$$
 
 </p>
 
@@ -299,13 +298,13 @@ Matematicamente:
 
 <p align="center">
 
-[
+$$
 M_{ij} =
 \begin{cases}
-0 & j \le i \
+0 & j \le i \\
 -\infty & j > i
 \end{cases}
-]
+$$
 
 </p>
 
@@ -387,8 +386,8 @@ ABCDEFG
 gera:
 </p>
 
-| Input  | Target |
-| ------ | ------ |
+| Input | Target |
+|---|---|
 | ABCDEF | BCDEFG |
 
 <p align="justify">
@@ -584,4 +583,3 @@ Além disso, este projeto estabelece uma base sólida para futuras extensões en
 <li>Transformers híbridos;</li>
 <li>Arquiteturas cognitivas com memória temporal.</li>
 </ul>
-```
