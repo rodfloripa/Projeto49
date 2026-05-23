@@ -1,38 +1,43 @@
-<p align="justify"><h1>Mini Transformer em PyTorch</h1></p>
 
-<p align="justify">
+# 1. Mini Transformer em PyTorch
+
+<div align="justify">
+
 Este projeto implementa um <b>Mini Transformer autoregressivo</b> utilizando <b>PyTorch</b>, reproduzindo os principais componentes presentes em arquiteturas modernas de Large Language Models (LLMs), como embeddings, positional encoding senoidal, multi-head self-attention, feedforward networks e geração autoregressiva de texto.
-</p>
 
-<p align="justify">
 O objetivo principal foi compreender profundamente o funcionamento interno de transformers modernos através da implementação prática de uma versão reduzida, porém funcional, capaz de aprender padrões linguísticos e gerar texto caractere por caractere após treinamento supervisionado.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Objetivos do Projeto</h2></p>
+# 2. Objetivos do Projeto
 
-<p align="justify">
+<div align="justify">
+
 Este projeto foi desenvolvido com os seguintes objetivos:
-</p>
 
 <ul>
-<li>Compreender a arquitetura Transformer;</li>
-<li>Implementar positional encoding senoidal;</li>
-<li>Aplicar causal masking em geração autoregressiva;</li>
-<li>Treinar um modelo generativo em nível de caracteres;</li>
-<li>Entender o papel da self-attention;</li>
-<li>Explorar geração sequencial token a token;</li>
-<li>Criar base para futuros transformers com memória persistente.</li>
+<li>Compreender a arquitetura Transformer</li>
+<li>Implementar positional encoding senoidal</li>
+<li>Aplicar causal masking em geração autoregressiva</li>
+<li>Treinar um modelo generativo em nível de caracteres</li>
+<li>Entender o papel da self-attention</li>
+<li>Explorar geração sequencial token a token</li>
+<li>Criar base para futuros transformers com memória persistente</li>
 </ul>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Importação das Bibliotecas</h2></p>
+# 3. Importação das Bibliotecas
 
-<p align="justify">
+<div align="justify">
+
 O projeto utiliza principalmente o framework <b>PyTorch</b>, responsável pela criação da arquitetura neural, gerenciamento automático de gradientes e treinamento em GPU utilizando CUDA.
-</p>
+
+</div>
 
 ```python
 import torch
@@ -40,9 +45,11 @@ import torch.nn as nn
 import math
 ```
 
-<p align="justify">
+<div align="justify">
+
 As bibliotecas possuem as seguintes funções:
-</p>
+
+</div>
 
 | Biblioteca | Função |
 |---|---|
@@ -52,62 +59,66 @@ As bibliotecas possuem as seguintes funções:
 
 ---
 
-<p align="justify"><h2>Configuração do Device</h2></p>
+# 4. Configuração do Device
 
-<p align="justify">
+<div align="justify">
+
 O código detecta automaticamente se existe uma GPU CUDA disponível. Caso exista, o treinamento é executado diretamente na GPU, acelerando significativamente o processamento das operações matriciais do transformer.
-</p>
+
+</div>
 
 ```python
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 ```
 
-<p align="justify">
+<div align="justify">
+
 Isso permite que:
-</p>
 
 <ul>
-<li>Tensores sejam processados em paralelo;</li>
-<li>Attention seja computada mais rapidamente;</li>
-<li>Treinamentos longos sejam viáveis;</li>
-<li>Grandes multiplicações matriciais sejam aceleradas.</li>
+<li>Tensores sejam processados em paralelo</li>
+<li>Attention seja computada mais rapidamente</li>
+<li>Treinamentos longos sejam viáveis</li>
+<li>Grandes multiplicações matriciais sejam aceleradas</li>
 </ul>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Classe PositionalEncoding</h2></p>
+# 5. Classe PositionalEncoding
 
-<p align="justify">
+<div align="justify">
+
 A classe <b>PositionalEncoding</b> é responsável por adicionar informação posicional aos embeddings.
-</p>
 
-<p align="justify">
 Transformers processam todos os tokens simultaneamente e, naturalmente, não possuem noção de ordem sequencial.
-</p>
 
-<p align="justify">
 Sem positional encoding, as frases:
-</p>
+
+</div>
 
 ```text
 gato bebe leite
 ```
 
-<p align="justify">
+<div align="justify">
+
 e:
-</p>
+
+</div>
 
 ```text
 leite gato bebe
 ```
 
-<p align="justify">
-poderiam parecer semanticamente equivalentes para o modelo.
-</p>
+<div align="justify">
 
-<p align="justify">
+poderiam parecer semanticamente equivalentes para o modelo.
+
 Por isso, é necessário adicionar explicitamente informações sobre posição.
-</p>
+
+</div>
 
 ```python
 class PositionalEncoding(nn.Module):
@@ -115,15 +126,17 @@ class PositionalEncoding(nn.Module):
 
 ---
 
-<p align="justify"><h2>Método __init__ da Classe PositionalEncoding</h2></p>
+# 6. Método __init__ da Classe PositionalEncoding
 
 ```python
 def __init__(self, d_model, dropout=0.1, max_len=5000):
 ```
 
-<p align="justify">
+<div align="justify">
+
 Esse método constrói toda a estrutura do positional encoding.
-</p>
+
+</div>
 
 | Parâmetro | Função |
 |---|---|
@@ -133,15 +146,17 @@ Esse método constrói toda a estrutura do positional encoding.
 
 ---
 
-<p align="justify"><h2>Construção das Posições</h2></p>
+# 7. Construção das Posições
 
 ```python
 position = torch.arange(max_len).unsqueeze(1)
 ```
 
-<p align="justify">
+<div align="justify">
+
 Essa linha cria:
-</p>
+
+</div>
 
 ```text
 0
@@ -151,25 +166,27 @@ Essa linha cria:
 ...
 ```
 
-<p align="justify">
-representando as posições dos tokens.
-</p>
+<div align="justify">
 
-<p align="justify">
+representando as posições dos tokens.
+
 O método:
-</p>
+
+</div>
 
 ```python
 unsqueeze(1)
 ```
 
-<p align="justify">
+<div align="justify">
+
 adiciona uma dimensão extra necessária para broadcasting matricial.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Frequências do Positional Encoding</h2></p>
+# 8. Frequências do Positional Encoding
 
 ```python
 div_term = torch.exp(
@@ -178,119 +195,117 @@ div_term = torch.exp(
 )
 ```
 
-<p align="justify">
+<div align="justify">
+
 Cada dimensão do embedding recebe uma frequência diferente.
-</p>
 
-<p align="justify">
 Isso gera assinaturas posicionais únicas para cada token.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Fórmulas do Positional Encoding</h2></p>
+# 9. Fórmulas do Positional Encoding
 
-<p align="center">
-
-$$
+```math
 PE(pos,2i)=\sin\left(\frac{pos}{10000^{2i/d}}\right)
-$$
+```
 
-</p>
-
-<p align="center">
-
-$$
+```math
 PE(pos,2i+1)=\cos\left(\frac{pos}{10000^{2i/d}}\right)
-$$
+```
 
-</p>
+<div align="justify">
 
-<p align="justify">
 As dimensões pares utilizam seno e as ímpares utilizam cosseno.
-</p>
 
-<p align="justify">
 Essas funções periódicas permitem que o transformer aprenda relações relativas entre posições.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Registro do Buffer Posicional</h2></p>
+# 10. Registro do Buffer Posicional
 
 ```python
 self.register_buffer('pe', pe)
 ```
 
-<p align="justify">
-Essa linha registra a matriz posicional como um buffer do modelo.
-</p>
+<div align="justify">
 
-<p align="justify">
+Essa linha registra a matriz posicional como um buffer do modelo.
+
 Buffers:
-</p>
 
 <ul>
-<li>Não são parâmetros treináveis;</li>
-<li>Mas acompanham GPU/CPU automaticamente;</li>
-<li>São salvos junto ao modelo.</li>
+<li>Não são parâmetros treináveis</li>
+<li>Mas acompanham GPU/CPU automaticamente</li>
+<li>São salvos junto ao modelo</li>
 </ul>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Método forward da Classe PositionalEncoding</h2></p>
+# 11. Método forward da Classe PositionalEncoding
 
 ```python
 def forward(self, x):
 ```
 
-<p align="justify">
+<div align="justify">
+
 O método <b>forward</b> define o fluxo computacional da classe.
-</p>
+
+</div>
 
 ```python
 x = x + self.pe[:, :x.size(1)]
 ```
 
-<p align="justify">
+<div align="justify">
+
 Aqui ocorre a soma:
-</p>
 
 <ul>
-<li>Embedding semântico;</li>
-<li>Informação posicional.</li>
+<li>Embedding semântico</li>
+<li>Informação posicional</li>
 </ul>
 
-<p align="justify">
 O resultado é um embedding contextualizado espacialmente.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Classe MiniTransformer</h2></p>
+# 12. Classe MiniTransformer
 
-<p align="justify">
+<div align="justify">
+
 A classe <b>MiniTransformer</b> representa a arquitetura principal do modelo.
-</p>
+
+</div>
 
 ```python
 class MiniTransformer(nn.Module):
 ```
 
-<p align="justify">
+<div align="justify">
+
 Ela contém:
-</p>
 
 <ul>
-<li>Embedding Layer;</li>
-<li>Positional Encoding;</li>
-<li>Transformer Encoder;</li>
-<li>Camada Linear final.</li>
+<li>Embedding Layer</li>
+<li>Positional Encoding</li>
+<li>Transformer Encoder</li>
+<li>Camada Linear final</li>
 </ul>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Método __init__ da Classe MiniTransformer</h2></p>
+# 13. Método __init__ da Classe MiniTransformer
 
 ```python
 def __init__(
@@ -315,19 +330,19 @@ def __init__(
 
 ---
 
-<p align="justify"><h2>Embedding Layer</h2></p>
+# 14. Embedding Layer
 
 ```python
 self.embedding = nn.Embedding(vocab_size, d_model)
 ```
 
-<p align="justify">
-Essa camada converte IDs inteiros em vetores densos.
-</p>
+<div align="justify">
 
-<p align="justify">
+Essa camada converte IDs inteiros em vetores densos.
+
 Exemplo:
-</p>
+
+</div>
 
 ```text
 15
@@ -335,25 +350,29 @@ Exemplo:
 [0.12, -0.77, 0.91, ...]
 ```
 
-<p align="justify">
+<div align="justify">
+
 Os embeddings representam semanticamente os tokens em espaço vetorial contínuo.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Positional Encoder</h2></p>
+# 15. Positional Encoder
 
 ```python
 self.pos_encoder = PositionalEncoding(d_model, dropout)
 ```
 
-<p align="justify">
+<div align="justify">
+
 Instancia o positional encoding anteriormente definido.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>TransformerEncoderLayer</h2></p>
+# 16. TransformerEncoderLayer
 
 ```python
 encoder_layers = nn.TransformerEncoderLayer(
@@ -365,28 +384,30 @@ encoder_layers = nn.TransformerEncoderLayer(
 )
 ```
 
-<p align="justify">
+<div align="justify">
+
 Esse bloco implementa:
-</p>
 
 <ul>
-<li>Multi-head self-attention;</li>
-<li>Feedforward network;</li>
-<li>Residual connections;</li>
-<li>Layer normalization.</li>
+<li>Multi-head self-attention</li>
+<li>Feedforward network</li>
+<li>Residual connections</li>
+<li>Layer normalization</li>
 </ul>
 
-<p align="justify">
 O parâmetro:
-</p>
+
+</div>
 
 ```python
 batch_first=True
 ```
 
-<p align="justify">
+<div align="justify">
+
 define o formato:
-</p>
+
+</div>
 
 ```text
 (batch, seq_len, features)
@@ -394,7 +415,7 @@ define o formato:
 
 ---
 
-<p align="justify"><h2>Empilhamento dos Encoders</h2></p>
+# 17. Empilhamento dos Encoders
 
 ```python
 self.transformer_encoder = nn.TransformerEncoder(
@@ -403,13 +424,13 @@ self.transformer_encoder = nn.TransformerEncoder(
 )
 ```
 
-<p align="justify">
-Essa linha empilha múltiplos blocos transformer.
-</p>
+<div align="justify">
 
-<p align="justify">
+Essa linha empilha múltiplos blocos transformer.
+
 Exemplo:
-</p>
+
+</div>
 
 ```text
 Transformer
@@ -423,87 +444,87 @@ Transformer
 
 ---
 
-<p align="justify"><h2>Camada Linear Final</h2></p>
+# 18. Camada Linear Final
 
 ```python
 self.fc_out = nn.Linear(d_model, vocab_size)
 ```
 
-<p align="justify">
+<div align="justify">
+
 Essa camada transforma embeddings contextuais em logits para cada token do vocabulário.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Máscara Causal</h2></p>
+# 19. Máscara Causal
 
 ```python
 self.register_buffer('src_mask', None)
 ```
 
-<p align="justify">
+<div align="justify">
+
 A máscara causal impede que o modelo enxergue tokens futuros durante treinamento autoregressivo.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Método _generate_square_subsequent_mask</h2></p>
+# 20. Método _generate_square_subsequent_mask
 
 ```python
 def _generate_square_subsequent_mask(self, sz):
 ```
 
-<p align="justify">
+<div align="justify">
+
 Esse método cria a máscara triangular superior utilizada no causal masking.
-</p>
 
-<p align="justify">
 Matematicamente:
-</p>
 
-<p align="center">
+</div>
 
-$$
+```math
 M_{ij} =
 \begin{cases}
 0 & j \le i \\
 -\infty & j > i
 \end{cases}
-$$
+```
 
-</p>
+<div align="justify">
 
-<p align="justify">
 O valor:
-</p>
+
+</div>
 
 ```text
 -\infty
 ```
 
-<p align="justify">
+<div align="justify">
+
 faz com que o softmax transforme essas posições em probabilidade zero.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Self-Attention</h2></p>
+# 21. Self-Attention
 
-<p align="justify">
+<div align="justify">
+
 A self-attention é o mecanismo central do transformer.
-</p>
 
-<p align="justify">
 Ela permite que cada token observe todos os outros tokens da sequência.
-</p>
 
-<p align="center">
+</div>
 
-$$
+```math
 Attention(Q,K,V)=softmax\left(\frac{QK^T}{\sqrt{d_k}}\right)V
-$$
-
-</p>
+```
 
 | Componente | Função |
 |---|---|
@@ -511,90 +532,98 @@ $$
 | K | Key |
 | V | Value |
 
-<p align="justify">
+<div align="justify">
+
 O produto:
-</p>
 
-<p align="center">
+</div>
 
-$$
+```math
 QK^T
-$$
+```
 
-</p>
+<div align="justify">
 
-<p align="justify">
 mede similaridade entre tokens.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Método forward da Classe MiniTransformer</h2></p>
+# 22. Método forward da Classe MiniTransformer
 
 ```python
 def forward(self, src):
 ```
 
-<p align="justify">
+<div align="justify">
+
 Esse método define todo o fluxo do transformer.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Geração da Máscara</h2></p>
+# 23. Geração da Máscara
 
 ```python
 if self.src_mask is None or self.src_mask.size(0) != src.size(1):
 ```
 
-<p align="justify">
+<div align="justify">
+
 Verifica se a máscara causal precisa ser recriada.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Embedding dos Tokens</h2></p>
+# 24. Embedding dos Tokens
 
 ```python
 src = self.embedding(src) * math.sqrt(self.d_model)
 ```
 
-<p align="justify">
-Os tokens são convertidos em embeddings.
-</p>
+<div align="justify">
 
-<p align="justify">
+Os tokens são convertidos em embeddings.
+
 O fator:
-</p>
+
+</div>
 
 ```python
 math.sqrt(self.d_model)
 ```
 
-<p align="justify">
+<div align="justify">
+
 estabiliza variância e gradientes.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Adição do Positional Encoding</h2></p>
+# 25. Adição do Positional Encoding
 
 ```python
 src = self.pos_encoder(src)
 ```
 
-<p align="justify">
+<div align="justify">
+
 Combina:
-</p>
 
 <ul>
-<li>conteúdo semântico;</li>
-<li>posição dos tokens.</li>
+<li>conteúdo semântico</li>
+<li>posição dos tokens</li>
 </ul>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Transformer Encoder</h2></p>
+# 26. Transformer Encoder
 
 ```python
 output = self.transformer_encoder(
@@ -603,35 +632,35 @@ output = self.transformer_encoder(
 )
 ```
 
-<p align="justify">
+<div align="justify">
+
 Aqui ocorre:
-</p>
 
 <ul>
-<li>self-attention;</li>
-<li>troca contextual de informação;</li>
-<li>processamento profundo da sequência.</li>
+<li>self-attention</li>
+<li>troca contextual de informação</li>
+<li>processamento profundo da sequência</li>
 </ul>
 
-<p align="justify">
 Esse é o núcleo computacional do transformer.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Camada de Saída</h2></p>
+# 27. Camada de Saída
 
 ```python
 output = self.fc_out(output)
 ```
 
-<p align="justify">
-Transforma embeddings contextuais em probabilidades para o próximo token.
-</p>
+<div align="justify">
 
-<p align="justify">
+Transforma embeddings contextuais em probabilidades para o próximo token.
+
 O shape final é:
-</p>
+
+</div>
 
 ```text
 (batch, seq_len, vocab_size)
@@ -639,35 +668,41 @@ O shape final é:
 
 ---
 
-<p align="justify"><h2>Dataset</h2></p>
+# 28. Dataset
 
-<p align="justify">
+<div align="justify">
+
 Foi criado um pequeno dataset textual contendo frases relacionadas à inteligência artificial e transformers.
-</p>
+
+</div>
 
 ```python
 with open("data.txt", "w", encoding="utf-8") as f:
     f.write(sample_text)
 ```
 
-<p align="justify">
+<div align="justify">
+
 Mesmo pequeno, o dataset já permite aprendizado de:
-</p>
 
 <ul>
-<li>estrutura linguística;</li>
-<li>continuidade textual;</li>
-<li>dependências locais;</li>
-<li>padrões sintáticos.</li>
+<li>estrutura linguística</li>
+<li>continuidade textual</li>
+<li>dependências locais</li>
+<li>padrões sintáticos</li>
 </ul>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Tokenização Character-Level</h2></p>
+# 29. Tokenização Character-Level
 
-<p align="justify">
+<div align="justify">
+
 O modelo opera em nível de caracteres.
-</p>
+
+</div>
 
 ```text
 "IA"
@@ -677,39 +712,45 @@ O modelo opera em nível de caracteres.
 [12,5]
 ```
 
-<p align="justify">
+<div align="justify">
+
 Isso simplifica:
-</p>
 
 <ul>
-<li>vocabulário;</li>
-<li>treinamento;</li>
-<li>implementação do tokenizer.</li>
+<li>vocabulário</li>
+<li>treinamento</li>
+<li>implementação do tokenizer</li>
 </ul>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Mini-batches</h2></p>
+# 30. Mini-batches
 
 ```python
 def get_batch():
 ```
 
-<p align="justify">
+<div align="justify">
+
 Seleciona trechos aleatórios do texto.
-</p>
+
+</div>
 
 | Input | Target |
 |---|---|
 | ABCDEF | BCDEFG |
 
-<p align="justify">
+<div align="justify">
+
 O objetivo é prever o próximo caractere.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Treinamento</h2></p>
+# 31. Treinamento
 
 ```python
 optimizer = torch.optim.AdamW(
@@ -718,76 +759,90 @@ optimizer = torch.optim.AdamW(
 )
 ```
 
-<p align="justify">
+<div align="justify">
+
 O AdamW é uma versão moderna do gradient descent utilizada em transformers.
-</p>
+
+</div>
 
 ```python
 criterion = nn.CrossEntropyLoss()
 ```
 
-<p align="justify">
+<div align="justify">
+
 A cross entropy mede distância entre:
-</p>
 
 <ul>
-<li>distribuição prevista;</li>
-<li>distribuição correta.</li>
+<li>distribuição prevista</li>
+<li>distribuição correta</li>
 </ul>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Backpropagation</h2></p>
+# 32. Backpropagation
 
 ```python
 loss.backward()
 ```
 
-<p align="justify">
+<div align="justify">
+
 Calcula gradientes automaticamente.
-</p>
+
+</div>
 
 ```python
 optimizer.step()
 ```
 
-<p align="justify">
+<div align="justify">
+
 Atualiza os pesos da rede neural.
-</p>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Convergência da Loss</h2></p>
+# 33. Convergência da Loss
 
-<p align="justify">
+<div align="justify">
+
 Durante o treinamento:
-</p>
+
+</div>
 
 ```text
 4.12 → 0.09
 ```
 
-<p align="justify">
+<div align="justify">
+
 A redução contínua da loss demonstra:
-</p>
 
 <ul>
-<li>aprendizado estável;</li>
-<li>convergência do modelo;</li>
-<li>capacidade de aprender padrões linguísticos.</li>
+<li>aprendizado estável</li>
+<li>convergência do modelo</li>
+<li>capacidade de aprender padrões linguísticos</li>
 </ul>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Geração Autoregressiva</h2></p>
+# 34. Geração Autoregressiva
 
 ```python
 logits = model(context)
 ```
 
-<p align="justify">
+<div align="justify">
+
 O modelo gera logits para o próximo token.
-</p>
+
+</div>
 
 ```python
 probs = torch.softmax(
@@ -796,17 +851,15 @@ probs = torch.softmax(
 )
 ```
 
-<p align="justify">
+<div align="justify">
+
 O softmax converte logits em probabilidades.
-</p>
 
-<p align="center">
+</div>
 
-$$
+```math
 softmax(x_i)=\frac{e^{x_i}}{\sum_j e^{x_j}}
-$$
-
-</p>
+```
 
 ```python
 next_token = torch.multinomial(
@@ -815,42 +868,44 @@ next_token = torch.multinomial(
 )
 ```
 
-<p align="justify">
-O próximo token é amostrado probabilisticamente.
-</p>
+<div align="justify">
 
-<p align="justify">
+O próximo token é amostrado probabilisticamente.
+
 Isso torna a geração:
-</p>
 
 <ul>
-<li>menos determinística;</li>
-<li>mais criativa;</li>
-<li>mais variada.</li>
+<li>menos determinística</li>
+<li>mais criativa</li>
+<li>mais variada</li>
 </ul>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Resultado Obtido</h2></p>
+# 35. Resultado Obtido
 
 ```text
 A inteligência artificial está avançando rapidamente e é fascina
 ```
 
-<p align="justify">
+<div align="justify">
+
 Mesmo utilizando um dataset pequeno, o modelo conseguiu aprender:
-</p>
 
 <ul>
-<li>continuidade textual;</li>
-<li>estrutura sintática;</li>
-<li>dependências contextuais;</li>
-<li>padrões linguísticos.</li>
+<li>continuidade textual</li>
+<li>estrutura sintática</li>
+<li>dependências contextuais</li>
+<li>padrões linguísticos</li>
 </ul>
+
+</div>
 
 ---
 
-<p align="justify"><h2>Fluxo Completo da Arquitetura</h2></p>
+# 36. Fluxo Completo da Arquitetura
 
 ```text
 Tokens
@@ -874,37 +929,34 @@ Próximo Token
 
 ---
 
-<p align="justify"><h2>Conclusão</h2></p>
+# 37. Conclusão
 
-<p align="justify">
+<div align="justify">
+
 Este projeto demonstrou na prática os principais mecanismos internos de transformers modernos através da implementação de um Mini Transformer autoregressivo em PyTorch.
-</p>
 
-<p align="justify">
 Mesmo sendo uma versão reduzida, a arquitetura implementada reproduz componentes fundamentais presentes em modelos de larga escala:
-</p>
 
 <ul>
-<li>Embeddings;</li>
-<li>Positional Encoding;</li>
-<li>Self-Attention;</li>
-<li>Causal Masking;</li>
-<li>Feedforward Networks;</li>
-<li>Treinamento autoregressivo.</li>
+<li>Embeddings</li>
+<li>Positional Encoding</li>
+<li>Self-Attention</li>
+<li>Causal Masking</li>
+<li>Feedforward Networks</li>
+<li>Treinamento autoregressivo</li>
 </ul>
 
-<p align="justify">
 O experimento demonstrou que transformers são essencialmente sistemas de otimização baseados em operações matriciais massivas guiadas por atenção contextual e aprendizado por gradiente.
-</p>
 
-<p align="justify">
 Além disso, este projeto estabelece uma base sólida para futuras extensões envolvendo:
-</p>
 
 <ul>
-<li>Memória persistente;</li>
-<li>Retrieval-Augmented Generation (RAG);</li>
-<li>KV Cache;</li>
-<li>Transformers híbridos;</li>
-<li>Arquiteturas cognitivas com memória temporal.</li>
+<li>Memória persistente</li>
+<li>Retrieval-Augmented Generation (RAG)</li>
+<li>KV Cache</li>
+<li>Transformers híbridos</li>
+<li>Arquiteturas cognitivas com memória temporal</li>
 </ul>
+
+</div>
+````
